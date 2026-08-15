@@ -57,7 +57,7 @@ const N = '✗';
 const compareRows = [
   { label: 'Works with games that have no cloud save', cells: [N, Y, Y, Y, Y] },
   { label: 'Runs without a server of your own', cells: [Y, Y, Y, Y, N] },
-  { label: 'Pulls the newest save before the game starts', cells: [Y, N, N, N, Y] },
+  { label: 'Pulls the newest save before the game starts', cells: [Y, N, N, 'Deck only, via plugin', Y] },
   { label: 'Warns you before two machines clash', cells: [Y, N, N, N, Y] },
   { label: 'Version history you can roll back', cells: [N, 'partly', Y, Y, Y] },
   { label: 'One console for every machine you own', cells: [N, 'partly', N, N, Y] },
@@ -395,11 +395,14 @@ const compareCols = ['Steam Cloud', 'Syncthing', 'Ludusavi', 'OpenSave', 'SaveLo
           <strong><a href="https://www.opensave.org/">OpenSave</a></strong> is the closest thing to
           SaveLocker and it's good — free, MIT-licensed, peer-to-peer, and it handles emulators,
           which we don't yet. If you want save sync with nothing to host, install it instead; you'll
-          be happy. SaveLocker is a different shape on purpose. It puts a server you own at the
-          centre and gives you a console over the top of it: every machine's health in one page, a
-          version history you can browse, an audit log, and the ability to tell your Deck to pull a
-          save while you're sat at your desktop. That's worth having if you already run a home
-          server and think of your machines as a fleet. If you don't, it's overhead.
+          be happy. Its Decky plugin will also sync around gameplay on a Steam Deck, though that
+          means installing Decky Loader and the plugin on top of the app, and it's Deck-only —
+          on Windows, saves sync when a file changes rather than when a game starts.
+          SaveLocker is a different shape on purpose. It puts a server you own at the centre and
+          gives you a console over the top of it: every machine's health in one page, a version
+          history you can browse, an audit log, and the ability to tell your Deck to pull a save
+          while you're sat at your desktop. That's worth having if you already run a home server
+          and think of your machines as a fleet. If you don't, it's overhead.
         </p>
         <p>
           <strong><a href="https://github.com/mtkennerly/ludusavi">Ludusavi</a></strong> is a genuinely

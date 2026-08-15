@@ -158,7 +158,7 @@ open a disappointed issue on day one.*
 > |---|---|---|---|---|---|
 > | Works with games that have no cloud save | ✗ | ✓ | ✓ | ✓ | ✓ |
 > | Runs without a server of your own | ✓ | ✓ | ✓ | ✓ | ✗ |
-> | Pulls the newest save **before** the game starts | ✓ | ✗ | ✗ | ✗ | ✓ |
+> | Pulls the newest save **before** the game starts | ✓ | ✗ | ✗ | Deck only, via plugin | ✓ |
 > | Warns you before two machines clash | ✓ | ✗ | ✗ | ✗ | ✓ |
 > | Version history you can roll back | ✗ | partly | ✓ | ✓ | ✓ |
 > | One console for every machine you own | ✗ | partly | ✗ | ✗ | ✓ |
@@ -183,11 +183,16 @@ open a disappointed issue on day one.*
 > wait for a save to finish being written, it can't stop the Deck pulling a file mid-write, and when
 > two copies diverge you get a conflict file rather than a decision.
 
-*[CHECK] — every row for Syncthing, Ludusavi and OpenSave is read off their documentation, not
-tested. The OpenSave rows especially: their README says the trigger is a filesystem watcher and that
-there is no locking, but they ship an `opensave launch` command and a Decky plugin, so the
-"before the game starts" row needs someone to actually try it before we publish it. A wrong cell in
-a comparison table is the fastest way to lose the room.*
+*The "before the game starts" row was **checked and corrected on 2026-08-14**. It first read ✗ for
+OpenSave, which was wrong: their Decky plugin does sync when a game starts and exits. But their
+README confirms the plugin is **SteamOS-only and an optional separate install** (on top of Decky
+Loader itself), and that the desktop app and CLI have **no launch hook at all** — filesystem
+watching is the only trigger on Windows and desktop Linux. Hence "Deck only, via plugin". A ✓ would
+be as misleading as the ✗ was.*
+
+*[CHECK] — the Syncthing and Ludusavi rows are still read off their documentation rather than
+tested. Worth ten minutes before launch. A wrong cell in a comparison table is the fastest way to
+lose the room.*
 
 *Note the two rows we deliberately lose — "runs without a server of your own" and "emulator saves".
 Leaving those out would be more flattering and much less credible, and the second someone spots an
@@ -441,7 +446,9 @@ of it is in our backlog.
 plane over it. Everything we have that they don't comes from that one decision:
 
 - the launch wrapper that pulls **before** the game reads the save, rather than syncing after a file
-  change is noticed;
+  change is noticed. **State this carefully** — OpenSave's Decky plugin does the same thing on a
+  Deck. The defensible version is that ours works on Windows as well as the Deck, is part of the
+  agent, and needs no Decky Loader and no second install. Do not claim they cannot do it;
 - the lease — one machine holds a game while it's running and the others are told, so the clash is
   prevented rather than resolved afterwards;
 - a console: fleet health, audit log, browsable version history, and remote push/pull/scan against
