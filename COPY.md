@@ -190,9 +190,12 @@ Loader itself), and that the desktop app and CLI have **no launch hook at all** 
 watching is the only trigger on Windows and desktop Linux. Hence "Deck only, via plugin". A ✓ would
 be as misleading as the ✗ was.*
 
-*[CHECK] — the Syncthing and Ludusavi rows are still read off their documentation rather than
-tested. Worth ten minutes before launch. A wrong cell in a comparison table is the fastest way to
-lose the room.*
+*The Syncthing and Ludusavi rows are read off their published documentation rather than tested.
+**Maintainer decision, 2026-08-14: accepted as-is** — the documentation is trusted for these two.
+Both are "partly" wherever the honest answer is nuanced (Syncthing does have file versioning and a
+per-device web GUI; Ludusavi does keep multiple backups), so neither row overstates our position.
+If either turns out wrong, correct it rather than defend it — that is what happened with the
+OpenSave row above, and correcting it cost nothing.*
 
 *Note the two rows we deliberately lose — "runs without a server of your own" and "emulator saves".
 Leaving those out would be more flattering and much less credible, and the second someone spots an
