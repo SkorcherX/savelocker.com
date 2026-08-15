@@ -1,0 +1,69 @@
+---
+const GITHUB = 'https://github.com/SkorcherX/SaveLocker';
+---
+
+<footer class="mt-24 border-t border-border/60 bg-bg-card/40">
+  <div class="mx-auto max-w-6xl px-5 py-12">
+    <div class="flex flex-col gap-8 md:flex-row md:justify-between">
+      <div class="max-w-sm">
+        <div class="flex items-center gap-2.5">
+          <img src="/img/logo.png" alt="" width="24" height="24" class="h-6 w-6" />
+          <span class="text-[15px] font-bold tracking-tight">
+            Save<span class="text-accent-green">Locker</span>
+          </span>
+        </div>
+        <p class="mt-3 text-[13px] leading-relaxed text-text-muted">
+          Self-hosted game save sync for PC and Steam Deck.
+        </p>
+      </div>
+
+      <div class="flex gap-12 text-[13px]">
+        <div>
+          <div class="eyebrow mb-3">Project</div>
+          <ul class="space-y-2 text-text-muted">
+            <li><a href={GITHUB} class="hover:text-text-primary">Source on GitHub</a></li>
+            <li>
+              <a href={`${GITHUB}/releases`} class="hover:text-text-primary">Releases</a>
+            </li>
+            <li>
+              <a href={`${GITHUB}/issues`} class="hover:text-text-primary">Report an issue</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow mb-3">Site</div>
+          <ul class="space-y-2 text-text-muted">
+            <li><a href="/start" class="hover:text-text-primary">Get started</a></li>
+            <li><a href="/faq" class="hover:text-text-primary">FAQ</a></li>
+            <li><a href="/#compare" class="hover:text-text-primary">Compare</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 space-y-2 border-t border-border/40 pt-6 text-[12px] text-text-dim">
+      <p>
+        Free for personal use · Source available under{' '}<a
+          href={`${GITHUB}/blob/main/LICENSE`}
+          class="text-text-faint underline underline-offset-2 hover:text-text-secondary"
+          >PolyForm Noncommercial 1.0.0</a
+        >
+      </p>
+      <p>
+        Not affiliated with Valve Corporation. Steam and Steam Deck are trademarks of Valve
+        Corporation.
+      </p>
+      <p>
+        Save path detection uses the{' '}<a
+          href="https://github.com/mtkennerly/ludusavi-manifest"
+          class="text-text-faint underline underline-offset-2 hover:text-text-secondary"
+          >Ludusavi manifest</a
+        >. Cover art from{' '}<a
+          href="https://www.steamgriddb.com/"
+          class="text-text-faint underline underline-offset-2 hover:text-text-secondary"
+          >SteamGridDB</a
+        >.
+      </p>
+    </div>
+  </div>
+</footer>

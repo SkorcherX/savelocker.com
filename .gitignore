@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+
+# Unprocessed camera originals. Kept out of public/ so the build cannot ship them,
+# and out of git so a 2.6 MB phone photo does not live in history forever.
+assets-src/
+.DS_Store
+*.log
+.env
+.env.production

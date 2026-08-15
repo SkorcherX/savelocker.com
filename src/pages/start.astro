@@ -1,0 +1,218 @@
+---
+import Base from '../layouts/Base.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import Callout from '../components/Callout.astro';
+import Tabs from '../components/Tabs.astro';
+
+const GITHUB = 'https://github.com/SkorcherX/SaveLocker';
+
+const compose = `services:
+  savelocker:
+    image: ghcr.io/skorcherx/savelocker:latest
+    container_name: savelocker-server
+    ports:
+      - "5080:8080"
+    volumes:
+      - ./savelocker-data:/data
+    restart: unless-stopped`;
+
+const deckInstall = `tar -xzf savelocker-x.x.x-linux-x64.tar.gz
+./SaveLocker/install.sh
+savelocker enroll --file ~/Downloads/policy.json`;
+---
+
+<Base
+  title="Get started — SaveLocker"
+  description="Run one container, join your machines with a single file, add your games. Set up SaveLocker on Windows and Steam Deck in about fifteen minutes."
+>
+  <div class="mx-auto max-w-3xl px-5 pt-16 pb-10 md:pt-20">
+    <div class="eyebrow">Setup</div>
+    <h1 class="mt-3 text-4xl font-bold tracking-tight md:text-5xl">Get started</h1>
+    <p class="mt-5 text-[17px] leading-relaxed text-body">
+      Three steps. The first one is the only one that takes any thought.
+    </p>
+  </div>
+
+  {/* ------------------------------------------------------------- Step 1 */}
+  <section class="mx-auto max-w-3xl px-5 py-10">
+    <div class="flex items-baseline gap-3">
+      <span class="font-mono text-[12px] font-medium tracking-widest text-accent-green">01</span>
+      <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Run the locker</h2>
+    </div>
+
+    <div class="prose-sl mt-5 text-[15px] leading-relaxed">
+      <p>
+        SaveLocker's server is a single container. Put it on whatever's always on at home — a NAS,
+        an unRAID box, a Raspberry Pi, a spare machine in a cupboard. It needs one folder to keep
+        your saves in.
+      </p>
+    </div>
+
+    <div class="mt-5 space-y-3">
+      <CodeBlock code={compose} lang="yaml" label="docker-compose.yml" />
+      <CodeBlock code="docker compose up -d" label="Terminal" />
+    </div>
+
+    <div class="prose-sl mt-5 text-[15px] leading-relaxed">
+      <p>
+        Open <code>http://&lt;your-server-ip&gt;:5080</code>. That's the console, and it's where
+        everything else happens.
+      </p>
+    </div>
+
+    <div class="mt-5">
+      <Callout title="Set an admin password now" tone="warn">
+        <p>
+          Configuration → it's the first card. Until you do, anyone on your network can open the
+          console.
+        </p>
+      </Callout>
+    </div>
+
+    <p class="mt-5 text-[14px] italic leading-relaxed text-text-muted">
+      unRAID users: there's a template in <a
+        href={GITHUB}
+        class="text-accent-green underline underline-offset-2">the repo</a
+      >, and <code class="font-mono not-italic">/mnt/user/appdata/savelocker</code> is the volume path
+      you want.
+    </p>
+  </section>
+
+  {/* ------------------------------------------------------------- Step 2 */}
+  <section class="mx-auto max-w-3xl px-5 py-10">
+    <div class="flex items-baseline gap-3">
+      <span class="font-mono text-[12px] font-medium tracking-widest text-accent-green">02</span>
+      <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Join your machines</h2>
+    </div>
+
+    <div class="prose-sl mt-5 text-[15px] leading-relaxed">
+      <p>
+        In the console: <strong>Configuration → Enroll a machine</strong>. Name the machine if you
+        like, then download the file it gives you and get it onto the machine you're joining.
+      </p>
+      <p>
+        The file works exactly once and expires in about fifteen minutes. If it expires, make
+        another — they're free.
+      </p>
+    </div>
+
+    <div class="mt-8">
+      <Tabs labels={['Windows', 'Steam Deck']} name="platform">
+        <div slot="panel-0">
+          <div class="prose-sl text-[15px] leading-relaxed">
+            <p>
+              Download the installer from <a href={`${GITHUB}/releases`}>Releases</a> and run it. On
+              the <strong>Enroll this machine</strong> page, point it at the file you just downloaded
+              — it'll show you which server and which machine name it's about to join. The machine shows
+              up in your console before the installer has finished closing.
+            </p>
+          </div>
+          <div class="mt-5">
+            <Callout title="Windows will warn you about the installer" tone="warn">
+              <p>
+                It isn't code-signed yet, so SmartScreen throws up a blue box. Click{' '}
+                <strong>More info → Run anyway</strong>. Signing is on the roadmap. If you'd rather
+                not, you can build it yourself from source.
+              </p>
+            </Callout>
+          </div>
+        </div>
+
+        <div slot="panel-1">
+          <div class="prose-sl text-[15px] leading-relaxed">
+            <p>Do this bit in Desktop Mode.</p>
+          </div>
+          <div class="mt-5">
+            <CodeBlock code={deckInstall} label="Terminal" />
+          </div>
+          <div class="prose-sl mt-5 text-[15px] leading-relaxed">
+            <p>
+              It installs to your home folder, never to the system — a SteamOS update wipes the
+              system partition and would take SaveLocker with it.
+            </p>
+            <p>If anything looks off, at any point, ever:</p>
+          </div>
+          <div class="mt-4">
+            <CodeBlock code="savelocker doctor" label="Terminal" />
+          </div>
+          <div class="prose-sl mt-4 text-[15px] leading-relaxed">
+            <p>
+              That's the command to remember. It checks the whole chain and tells you which link is
+              broken.
+            </p>
+          </div>
+        </div>
+      </Tabs>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------- Step 3 */}
+  <section class="mx-auto max-w-3xl px-5 py-10">
+    <div class="flex items-baseline gap-3">
+      <span class="font-mono text-[12px] font-medium tracking-widest text-accent-green">03</span>
+      <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Add your games</h2>
+    </div>
+
+    <div class="prose-sl mt-5 text-[15px] leading-relaxed">
+      <p>
+        Open the SaveLocker window — the tray icon on Windows, or SaveLocker from your apps list on
+        the Deck — and go to <strong>Add game</strong>. It scans and shows you what it found: your
+        Steam library, anything you've added to Steam yourself, and your Heroic games. Tick the ones
+        you want and hit Enroll.
+      </p>
+      <p>
+        Most games already have their save folder filled in. For the ones that don't, point it at
+        the folder yourself, once.
+      </p>
+    </div>
+
+    <div class="mt-8 rounded-lg border border-border bg-bg-card p-6">
+      <div class="eyebrow text-accent-amber-lt">On the Deck, one more step per game</div>
+      <div class="prose-sl mt-3 text-[15px] leading-relaxed">
+        <p>
+          Steam has to tell SaveLocker when a game starts and stops. In Steam, right-click the game
+          → <strong>Properties → Launch Options</strong>, and paste this in:
+        </p>
+      </div>
+      <div class="mt-4">
+        <CodeBlock code="savelocker run -- %command%" label="Steam launch options" />
+      </div>
+      <div class="prose-sl mt-4 text-[15px] leading-relaxed">
+        <p>
+          <strong>This is the step people miss.</strong> Without it the game still runs, and SaveLocker
+          just never hears about it — so nothing syncs. Once per game, then you're done with it forever.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* --------------------------------------------------------------- Close */}
+  <section class="mx-auto max-w-3xl px-5 py-10 pb-4">
+    <div class="border-t border-border pt-10">
+      <h2 class="text-2xl font-bold tracking-tight">That's it</h2>
+      <div class="prose-sl mt-5 text-[15px] leading-relaxed">
+        <p>
+          Play something. Quit. Check the console — your save is there, with a timestamp and a size.
+        </p>
+        <p>Then go do the same on your other machine, and stop thinking about it.</p>
+        <p>
+          Something not working? <code>savelocker doctor</code> on the Deck, and the{' '}
+          <strong>Help</strong> tab in the console covers the rest. If you're stuck,{' '}
+          <a href={`${GITHUB}/issues`}>open an issue</a>.
+        </p>
+      </div>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href="/faq"
+          class="rounded border border-border px-5 py-2 text-[14px] font-medium transition-colors hover:border-text-secondary"
+          >Read the FAQ</a
+        >
+        <a
+          href={`${GITHUB}/releases`}
+          class="rounded border border-border px-5 py-2 text-[14px] font-medium transition-colors hover:border-text-secondary"
+          >Downloads</a
+        >
+      </div>
+    </div>
+  </section>
+</Base>

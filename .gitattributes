@@ -1,0 +1,13 @@
+# Normalise to LF in the repository. The site is authored on Windows and built on Linux
+# (Cloudflare Pages), and CRLF has already cost this project real time elsewhere — a CRLF
+# `.node-version` can defeat the build's Node version detection outright.
+* text=auto eol=lf
+
+# Binary assets must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff  binary
+*.woff2 binary

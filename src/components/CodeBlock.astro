@@ -1,0 +1,49 @@
+---
+interface Props {
+  code: string;
+  lang?: string;
+  /** Label shown top-left, e.g. "docker-compose.yml" or "Terminal". */
+  label?: string;
+}
+
+const { code, lang = 'sh', label } = Astro.props;
+const trimmed = code.trim();
+---
+
+<div class="group relative overflow-hidden rounded-md border border-border bg-bg-card">
+  <div
+    class="flex items-center justify-between border-b border-border bg-bg-table-hd px-3.5 py-2"
+  >
+    <span class="font-mono text-[11px] text-text-dim">{label ?? lang}</span>
+    <button
+      type="button"
+      class="copy-btn rounded border border-border px-2 py-0.5 font-mono text-[11px] text-text-secondary transition-colors hover:border-accent-green hover:text-accent-green"
+      data-code={trimmed}
+    >
+      Copy
+    </button>
+  </div>
+  <pre
+    class="overflow-x-auto px-4 py-3.5 font-mono text-[12.5px] leading-relaxed text-[#86efac]"><code>{trimmed}</code></pre>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const code = btn.dataset.code;
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code);
+      } catch {
+        return; // Clipboard blocked (insecure context, denied permission) — leave the label alone.
+      }
+      const original = btn.textContent;
+      btn.textContent = 'Copied';
+      btn.classList.add('text-accent-green', 'border-accent-green');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('text-accent-green', 'border-accent-green');
+      }, 1600);
+    });
+  });
+</script>

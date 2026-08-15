@@ -1,0 +1,73 @@
+---
+interface Props {
+  labels: string[];
+  /** Unique per instance — ids must not collide across tab groups on one page. */
+  name: string;
+}
+
+const { labels, name } = Astro.props;
+---
+
+<div class="sl-tabs" data-tabs>
+  <div role="tablist" aria-label={name} class="flex flex-wrap gap-1.5 border-b border-border pb-3">
+    {
+      labels.map((label, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`${name}-tab-${i}`}
+          aria-controls={`${name}-panel-${i}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          class="sl-tab rounded border border-border px-3.5 py-1.5 text-[13px] font-medium text-text-secondary transition-colors aria-selected:border-accent-green aria-selected:bg-accent-green aria-selected:text-white hover:text-text-primary"
+        >
+          {label}
+        </button>
+      ))
+    }
+  </div>
+
+  {
+    labels.map((_, i) => (
+      <div
+        role="tabpanel"
+        id={`${name}-panel-${i}`}
+        aria-labelledby={`${name}-tab-${i}`}
+        class="sl-panel pt-6"
+        hidden={i !== 0}
+      >
+        {i === 0 && <slot name="panel-0" />}
+        {i === 1 && <slot name="panel-1" />}
+        {i === 2 && <slot name="panel-2" />}
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((group) => {
+    const tabs = Array.from(group.querySelectorAll<HTMLButtonElement>('.sl-tab'));
+    const panels = Array.from(group.querySelectorAll<HTMLElement>('.sl-panel'));
+
+    const select = (index: number) => {
+      tabs.forEach((tab, i) => {
+        const active = i === index;
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+        panels[i].hidden = !active;
+      });
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i));
+      tab.addEventListener('keydown', (e) => {
+        const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!dir) return;
+        e.preventDefault();
+        const next = (i + dir + tabs.length) % tabs.length;
+        select(next);
+        tabs[next].focus();
+      });
+    });
+  });
+</script>

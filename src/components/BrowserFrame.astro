@@ -1,0 +1,29 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  /** Shown in the fake address bar. */
+  url?: string;
+  loading?: 'eager' | 'lazy';
+  class?: string;
+}
+
+const { src, alt, url = 'savelocker.local:5080', loading = 'lazy', class: cls = '' } = Astro.props;
+---
+
+<figure class={`overflow-hidden rounded-lg border border-border bg-bg-card shadow-2xl shadow-black/40 ${cls}`}>
+  <div class="flex items-center gap-3 border-b border-border bg-bg-table-hd px-3.5 py-2.5">
+    <div class="flex gap-1.5" aria-hidden="true">
+      <span class="h-2.5 w-2.5 rounded-full bg-border"></span>
+      <span class="h-2.5 w-2.5 rounded-full bg-border"></span>
+      <span class="h-2.5 w-2.5 rounded-full bg-border"></span>
+    </div>
+    <div
+      class="flex-1 truncate rounded bg-bg-global px-2.5 py-1 text-center font-mono text-[11px] text-text-dim"
+      aria-hidden="true"
+    >
+      {url}
+    </div>
+  </div>
+  <img src={src} alt={alt} loading={loading} decoding="async" class="block w-full" />
+</figure>

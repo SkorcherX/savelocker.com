@@ -1,0 +1,33 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  /** Set on every other row to alternate the image side. */
+  reverse?: boolean;
+  id?: string;
+}
+
+const { eyebrow, title, reverse = false, id } = Astro.props;
+---
+
+<section id={id} class="mx-auto max-w-6xl px-5 py-14 md:py-20">
+  <div
+    class:list={[
+      'flex flex-col gap-10 md:flex-row md:items-center md:gap-14',
+      reverse && 'md:flex-row-reverse',
+    ]}
+  >
+    <div class="md:w-[42%] md:shrink-0">
+      <div class="eyebrow">{eyebrow}</div>
+      <h3 class="mt-3 text-2xl font-bold tracking-tight md:text-[28px] md:leading-tight">
+        {title}
+      </h3>
+      <div class="prose-sl mt-4 text-[15px] leading-relaxed">
+        <slot />
+      </div>
+    </div>
+    <div class="min-w-0 flex-1">
+      <slot name="visual" />
+    </div>
+  </div>
+</section>

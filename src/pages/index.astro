@@ -1,0 +1,442 @@
+---
+import Base from '../layouts/Base.astro';
+import BrowserFrame from '../components/BrowserFrame.astro';
+import FeatureRow from '../components/FeatureRow.astro';
+import SyncDiagram from '../components/SyncDiagram.astro';
+
+const GITHUB = 'https://github.com/SkorcherX/SaveLocker';
+
+const steps = [
+  {
+    n: '1',
+    title: 'Run the locker',
+    body: "One container on whatever's always on: a NAS, an unRAID box, a mini PC. It holds your saves and nothing else. There's no service to sign up for and no data leaving your house.",
+  },
+  {
+    n: '2',
+    title: 'Join your machines',
+    body: 'The console hands you a file. You open it on your PC and your Deck. That’s the whole enrollment — there’s no key to copy, nothing to paste, and the file stops working after fifteen minutes.',
+  },
+  {
+    n: '3',
+    title: 'Play',
+    body: 'SaveLocker pulls your latest save before the game launches and pushes it back after you quit. You don’t press anything.',
+  },
+];
+
+const rest = [
+  {
+    title: 'Rewind to any earlier save',
+    body: 'Every sync is kept as its own version. Corrupted your file, or made a choice you regret? Roll back to any point in the history from the console.',
+  },
+  {
+    title: 'One file to add a machine',
+    body: 'Enrollment is a single-use file that expires in about fifteen minutes. No API key is ever copied by hand, on any platform.',
+  },
+  {
+    title: 'Keeps working when the server doesn’t',
+    body: 'Take the Deck out of the house and it keeps playing. Saves queue up on the device and sync themselves the moment you’re home.',
+  },
+  {
+    title: 'Stays out of the way',
+    body: 'A tray icon on Windows, a background service on the Deck. It waits for the game to finish writing before it touches anything, and it tells you when something’s wrong instead of failing quietly.',
+  },
+  {
+    title: 'Updates itself',
+    body: 'Point the console at a new Windows installer and the agents take it from there, silently, without you visiting each machine.',
+  },
+  {
+    title: 'It’s yours',
+    body: 'Your saves sit on your hardware, in plain zip files, under your own admin password. No account, no subscription, no telemetry, nothing phoning home.',
+  },
+];
+
+// Ticks and crosses are decorative; the accessible name comes from the cell's aria-label.
+const Y = '✓';
+const N = '✗';
+const compareRows = [
+  { label: 'Works with games that have no cloud save', cells: [N, Y, Y, Y, Y] },
+  { label: 'Runs without a server of your own', cells: [Y, Y, Y, Y, N] },
+  { label: 'Pulls the newest save before the game starts', cells: [Y, N, N, N, Y] },
+  { label: 'Warns you before two machines clash', cells: [Y, N, N, N, Y] },
+  { label: 'Version history you can roll back', cells: [N, 'partly', Y, Y, Y] },
+  { label: 'One console for every machine you own', cells: [N, 'partly', N, N, Y] },
+  { label: 'Push, pull or re-scan another machine remotely', cells: [N, N, N, N, Y] },
+  { label: 'Emulator saves', cells: [N, Y, 'partly', Y, 'not yet'] },
+  { label: 'Saves never pass through anyone else’s machine', cells: [N, Y, Y, 'on a LAN', Y] },
+];
+const compareCols = ['Steam Cloud', 'Syncthing', 'Ludusavi', 'OpenSave', 'SaveLocker'];
+---
+
+<Base
+  title="SaveLocker — Self-hosted game save sync for PC and Steam Deck"
+  description="Sync game saves between your PC and Steam Deck, even for games with no cloud save. Self-hosted, free for personal use, no account."
+>
+  {/* ---------------------------------------------------------------- Hero */}
+  <section class="mx-auto max-w-6xl px-5 pt-16 pb-10 md:pt-24">
+    <div class="mx-auto max-w-3xl text-center">
+      <div class="eyebrow">Self-hosted game save sync</div>
+      <h1
+        class="mt-4 text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl md:text-6xl"
+      >
+        No Cloud Sync? <span class="whitespace-nowrap text-accent-green">No Problem.</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-body">
+        Stop manually transferring files for older titles, indie gems, and non-Steam games.
+        SaveLocker effortlessly brings modern cross-progression to your PC and Steam Deck, all
+        entirely self-hosted.
+      </p>
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="/start"
+          class="rounded bg-accent-green px-6 py-2.5 text-[15px] font-semibold text-white transition-opacity hover:opacity-85"
+          >Get started</a
+        >
+        <a
+          href={GITHUB}
+          class="rounded border border-border px-6 py-2.5 text-[15px] font-medium text-text-primary transition-colors hover:border-text-secondary"
+          >Source on GitHub</a
+        >
+      </div>
+      <p class="mt-6 font-mono text-[11.5px] tracking-wide text-text-muted">
+        Free for personal use · Windows and Steam Deck · No account, ever
+      </p>
+    </div>
+
+    <div class="mt-16">
+      <BrowserFrame
+        src="/screenshots/console-games.png"
+        alt="The SaveLocker console: a library of nine games down the left, each marked in sync, with the selected game's sync status, machines, save paths and recent activity filling the page."
+        loading="eager"
+      />
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------- Problem */}
+  <section class="mx-auto max-w-3xl px-5 py-16 md:py-24">
+    <div class="eyebrow">The problem</div>
+    <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-[38px] md:leading-tight">
+      You already know the feeling.
+    </h2>
+    <div class="prose-sl mt-6 text-[17px] leading-relaxed">
+      <p>
+        You beat the boss on the Deck. You sit down at the PC. The game loads you in three hours
+        ago.
+      </p>
+      <p>
+        Steam Cloud only covers games whose publisher switched it on. Older titles, indie games,
+        anything you bought on GOG or Epic, anything you added to Steam yourself — you're on your
+        own. So you copy a folder to a USB stick, or you just play the game on one machine and stop
+        pretending.
+      </p>
+    </div>
+  </section>
+
+  {/* --------------------------------------------------------- How it works */}
+  <section id="how" class="border-y border-border/50 bg-bg-card/30">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:py-24">
+      <div class="max-w-2xl">
+        <div class="eyebrow">How it works</div>
+        <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-[38px] md:leading-tight">
+          Three steps, then you forget it exists.
+        </h2>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {
+          steps.map((s) => (
+            <div class="sl-card p-6">
+              <div class="font-mono text-[11px] font-medium tracking-widest text-accent-green">
+                STEP {s.n}
+              </div>
+              <h3 class="mt-3 text-lg font-semibold">{s.title}</h3>
+              <p class="mt-2.5 text-[14px] leading-relaxed text-text-muted">{s.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-16">
+        <SyncDiagram />
+      </div>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------ Features */}
+  <div id="features" class="pt-10">
+    <FeatureRow eyebrow="Detection" title="It finds your games for you.">
+      <p>
+        SaveLocker scans your Steam library, the non-Steam games you've added to Steam yourself, and
+        anything staged in Heroic — Epic, GOG, Amazon, sideloaded. Then it looks up where each one
+        actually keeps its saves.
+      </p>
+      <p>Most of the time, you just tick a box.</p>
+      <BrowserFrame
+        slot="visual"
+        src="/screenshots/agent-win-add-games.png"
+        alt="The SaveLocker agent's Add Games screen: filter chips across the top and a list of detected titles, each with its resolved save folder."
+        url="localhost:5178"
+      />
+    </FeatureRow>
+
+    <FeatureRow eyebrow="The console" title="One console for every machine you own." reverse>
+      <p>
+        Every game, every machine, every version, in one page. See which machine last uploaded, what
+        each one thinks its save folder is, and how big the history has grown.
+      </p>
+      <p>
+        You can drive the fleet from here too — tell the Deck to pull a save while you're sat at
+        your desktop, and watch the result land.
+      </p>
+      <BrowserFrame
+        slot="visual"
+        src="/screenshots/console-game-detail.png"
+        alt="The console's game detail page: three machines with their last upload times, each machine's own save path, recent remote commands, and a version history where any earlier save can be set as the latest."
+      />
+    </FeatureRow>
+
+    <FeatureRow eyebrow="Steam Deck" title="Built for the couch.">
+      <p>
+        The Deck agent has a full gamepad-driven interface that runs in Game Mode. Add a game, set a
+        save folder, check your sync status — without ever reaching for a keyboard or dropping to
+        the desktop.
+      </p>
+      <p>No Decky Loader required. It's part of the agent.</p>
+      <figure
+        slot="visual"
+        class="overflow-hidden rounded-lg border border-border shadow-2xl shadow-black/40"
+      >
+        <img
+          src="/screenshots/deck-in-hands.jpg"
+          alt="A Steam Deck held in both hands, running SaveLocker in Game Mode: eight games tracked, 138 saves backed up, last synced two hours ago."
+          loading="lazy"
+          decoding="async"
+          class="block w-full"
+        />
+      </figure>
+    </FeatureRow>
+
+    <FeatureRow eyebrow="Anywhere" title="Self-hosted doesn't mean home-only." reverse>
+      <p>
+        Put <a href="https://tailscale.com/">Tailscale</a>, WireGuard or any tunnel between your Deck
+        and your locker and it syncs from anywhere — a hotel, a train, your parents' house. Your
+        saves travel through your own tunnel, not through anybody's relay.
+      </p>
+      <p>
+        Somewhere with no signal at all? The Deck keeps playing and queues its saves until you're
+        back in reach.
+      </p>
+      <figure
+        slot="visual"
+        class="overflow-hidden rounded-lg border border-border shadow-2xl shadow-black/40"
+      >
+        <img
+          src="/screenshots/deck-overview.jpeg"
+          alt="The SaveLocker Deck interface showing games tracked, saves backed up, time since last sync, and the address of the server it is enrolled with."
+          loading="lazy"
+          decoding="async"
+          class="block w-full"
+        />
+      </figure>
+    </FeatureRow>
+  </div>
+
+  {/* ------------------------------------------------------- Safety + rest */}
+  <section class="border-y border-border/50 bg-bg-card/30">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:py-24">
+      <div class="max-w-2xl">
+        <div class="eyebrow">Safety</div>
+        <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-[38px] md:leading-tight">
+          Nothing gets overwritten by accident.
+        </h2>
+        <div class="prose-sl mt-6 text-[16px] leading-relaxed">
+          <p>
+            While a game is running on one machine, the others know about it — so the clash gets
+            prevented rather than cleaned up afterwards.
+          </p>
+          <p>
+            If two machines change the same save anyway, because one of them was offline,
+            SaveLocker notices the saves have diverged, flags it as a conflict, and hands you both
+            options. It will not pick for you, and it will not quietly throw one away.
+          </p>
+        </div>
+      </div>
+
+      <figure class="mt-10">
+        <img
+          src="/screenshots/console-conflict.png"
+          alt="A conflict in the console: WIDEBOY cannot sync, and the two diverged saves are offered side by side — the Steam Deck's current latest at 35.49 MB and WIDEBOY's at 35.01 MB — each with buttons to use it as latest or keep both."
+          loading="lazy"
+          decoding="async"
+          width="1336"
+          height="172"
+          class="block w-full rounded-lg border border-border shadow-xl shadow-black/30"
+        />
+        <figcaption class="mt-3 text-[13px] text-text-muted">
+          What a conflict actually looks like. Both saves are kept until you say otherwise.
+        </figcaption>
+      </figure>
+
+      <div class="mt-14 grid gap-x-12 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          rest.map((f) => (
+            <div class="border-t border-border pt-5">
+              <h3 class="text-[15px] font-semibold">{f.title}</h3>
+              <p class="mt-2 text-[14px] leading-relaxed text-text-muted">{f.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ---------------------------------------------------------- Is this you */}
+  <section id="foryou" class="mx-auto max-w-3xl px-5 py-16 md:py-24">
+    <div class="eyebrow">Honestly</div>
+    <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-[38px] md:leading-tight">
+      Is this for you?
+    </h2>
+    <div class="prose-sl mt-6 text-[16px] leading-relaxed">
+      <p>
+        <strong>You'll get on with SaveLocker if</strong> you've already got something running at home
+        that can host a Docker container — a NAS, an unRAID server, a spare mini PC — and you play the
+        same games on more than one machine.
+      </p>
+      <p>
+        <strong>You won't</strong> if you want something that just works with nothing of your own to
+        run. SaveLocker is self-hosted by design — that's the point of it, and it's the price of it.
+        If you'd rather not host anything, <a href="https://www.opensave.org/">OpenSave</a> does peer-to-peer
+        save sync and does it well.
+      </p>
+      <p>
+        <strong>Away from home is fine.</strong> Self-hosted doesn't mean home-only: put Tailscale or
+        any tunnel between your machines and your locker follows you.
+      </p>
+      <p>
+        <strong>Right now it runs on Windows and on Linux, including the Steam Deck.</strong> There's
+        no macOS agent yet, and emulator saves aren't supported yet either.
+      </p>
+    </div>
+  </section>
+
+  {/* -------------------------------------------------------------- Compare */}
+  <section id="compare" class="border-y border-border/50 bg-bg-card/30">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:py-24">
+      <div class="max-w-2xl">
+        <div class="eyebrow">Alternatives</div>
+        <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-[38px] md:leading-tight">
+          How it compares.
+        </h2>
+      </div>
+
+      <div class="mt-10 overflow-x-auto">
+        <table class="w-full min-w-[760px] border-collapse text-[13px]">
+          <thead>
+            <tr>
+              <th class="w-[36%] border-b border-border px-3 py-3 text-left font-semibold text-text-secondary"
+                ><span class="sr-only">Capability</span></th
+              >
+              {
+                compareCols.map((c) => (
+                  <th
+                    scope="col"
+                    class:list={[
+                      'border-b border-border px-3 py-3 text-center font-semibold',
+                      c === 'SaveLocker' ? 'text-accent-green' : 'text-text-secondary',
+                    ]}
+                  >
+                    {c}
+                  </th>
+                ))
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {
+              compareRows.map((row) => (
+                <tr>
+                  <th
+                    scope="row"
+                    class="border-b border-bg-row-sep px-3 py-3 text-left font-normal text-body"
+                  >
+                    {row.label}
+                  </th>
+                  {row.cells.map((cell, i) => (
+                    <td
+                      class:list={[
+                        'border-b border-bg-row-sep px-3 py-3 text-center',
+                        compareCols[i] === 'SaveLocker' && 'bg-accent-green/5',
+                      ]}
+                    >
+                      {cell === Y && (
+                        <span class="text-[15px] text-accent-green" aria-label="yes">
+                          {Y}
+                        </span>
+                      )}
+                      {cell === N && (
+                        <span class="text-[15px] text-text-dim" aria-label="no">
+                          {N}
+                        </span>
+                      )}
+                      {cell !== Y && cell !== N && (
+                        <span class="font-mono text-[11px] text-text-muted">{cell}</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="prose-sl mt-10 max-w-3xl space-y-5 text-[15px] leading-relaxed">
+        <p>
+          <strong><a href="https://www.opensave.org/">OpenSave</a></strong> is the closest thing to
+          SaveLocker and it's good — free, MIT-licensed, peer-to-peer, and it handles emulators,
+          which we don't yet. If you want save sync with nothing to host, install it instead; you'll
+          be happy. SaveLocker is a different shape on purpose. It puts a server you own at the
+          centre and gives you a console over the top of it: every machine's health in one page, a
+          version history you can browse, an audit log, and the ability to tell your Deck to pull a
+          save while you're sat at your desktop. That's worth having if you already run a home
+          server and think of your machines as a fleet. If you don't, it's overhead.
+        </p>
+        <p>
+          <strong><a href="https://github.com/mtkennerly/ludusavi">Ludusavi</a></strong> is a genuinely
+          excellent backup tool, and SaveLocker leans on its community save-path manifest to find your
+          games — we owe it. The difference is what happens next: Ludusavi backs your saves up, and you
+          decide when and where to restore them. SaveLocker moves them between machines on its own and
+          arbitrates when two of them disagree.
+        </p>
+        <p>
+          <strong><a href="https://syncthing.net/">Syncthing</a></strong> will sync any folder you point
+          it at, but it doesn't know what a game is. It can't wait for a save to finish being written,
+          it can't stop the Deck pulling a file mid-write, and when two copies diverge you get a conflict
+          file rather than a decision.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ------------------------------------------------------------ Final CTA */}
+  <section class="mx-auto max-w-3xl px-5 py-20 text-center md:py-28">
+    <h2 class="text-3xl font-bold tracking-tight md:text-[38px] md:leading-tight">
+      Fifteen minutes to your first sync.
+    </h2>
+    <p class="mt-4 text-[17px] text-body">
+      One container, one file per machine, and you're done.
+    </p>
+    <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+      <a
+        href="/start"
+        class="rounded bg-accent-green px-6 py-2.5 text-[15px] font-semibold text-white transition-opacity hover:opacity-85"
+        >Get started</a
+      >
+      <a
+        href={GITHUB}
+        class="rounded border border-border px-6 py-2.5 text-[15px] font-medium text-text-primary transition-colors hover:border-text-secondary"
+        >Source on GitHub</a
+      >
+    </div>
+  </section>
+</Base>

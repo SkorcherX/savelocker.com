@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* Palette is lifted verbatim from web/src/index.css in the SaveLocker repo so the site and the
+   product cannot drift apart. If a colour changes there, change it here — do not eyeball it. */
+@theme {
+  --color-bg-global:        #2A3238;
+  --color-bg-card:          #1E252A;
+  --color-bg-table-hd:      #222d34;
+  --color-bg-row-sep:       #252e35;
+  --color-text-primary:     #ECEFF1;
+  --color-text-muted:       #9CA3AF;
+  --color-text-secondary:   #8b9aaa;
+  --color-text-dim:         #556070;
+  --color-text-faint:       #64748b;
+  --color-accent-green:     #129271;
+  --color-accent-amber:     #f4a60d;
+  --color-accent-amber-lt:  #fdce63;
+  --color-border:           #494949;
+
+  /* Site-only additions. The console has no need for these — a landing page does. */
+  --color-accent-green-lt:  #16b992;
+  --color-body:             #cbd5e1;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* EVERYTHING below must live inside a @layer. Tailwind v4 emits its utilities into the `utilities`
+   cascade layer, and unlayered CSS beats layered CSS no matter how weak its selector — so a bare
+   `* { margin: 0 }` out here silently defeats every m-* and p-* utility on the site, mx-auto
+   included. That is not hypothetical: it shipped in the first draft and un-centred every container
+   on the page. Do not add a naked rule to this file. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* The sticky nav is 56px; anchored sections must clear it. */
+    scroll-padding-top: 80px;
+  }
+
+  body {
+    background: var(--color-bg-global);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  ::selection {
+    background: var(--color-accent-green);
+    color: var(--color-text-primary);
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg-card); }
+  ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-text-dim); }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-green);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* The console's section heading: small, uppercase, wide-tracked, muted. Used here as the page's
+     structural rhythm — it is the single strongest visual tell that this site IS the product. */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  /* Console card chrome, reused as page furniture. */
+  .sl-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  /* Preflight zeroes every margin, so prose flow spacing has to be reinstated deliberately.
+     Living in the components layer means a utility like space-y-* still overrides it. */
+  .prose-sl > * + * { margin-top: 1rem; }
+  .prose-sl p { color: var(--color-body); }
+  .prose-sl strong { color: var(--color-text-primary); font-weight: 600; }
+  .prose-sl a {
+    color: var(--color-accent-green);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose-sl a:hover { color: var(--color-accent-green-lt); }
+  .prose-sl code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: #86efac;
+  }
+}
