@@ -11,9 +11,17 @@
   # tabs and copy buttons on /start, and its hash changes every build — a hash pinned in this
   # hand-maintained file would go stale silently and break that page in production only. The
   # remaining directives still block the attack classes that matter for a static site with no auth,
-  # no forms and no user input. If Cloudflare Web Analytics is enabled, add
-  # https://static.cloudflareinsights.com to script-src or the beacon will be blocked.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'; object-src 'none'; upgrade-insecure-requests
+  # no forms and no user input.
+  #
+  # font-src MUST keep data:. Vite inlines any asset under its 4 KB threshold, and several of the
+  # @fontsource unicode-range subsets fall under it, so Inter and JetBrains Mono arrive as data:
+  # URIs. Without this the fonts are blocked and the site silently renders in system fallbacks —
+  # which is invisible locally, because the dev server sends no CSP at all.
+  #
+  # static.cloudflareinsights.com is the Web Analytics beacon, injected by Cloudflare at the edge
+  # rather than by the build. Its RUM payload posts to /cdn-cgi/rum on this origin, so connect-src
+  # needs nothing extra. Drop this entry if Web Analytics is ever turned off.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'; object-src 'none'; upgrade-insecure-requests
 
 # Fingerprinted build output is safe to cache forever.
 /_astro/*
