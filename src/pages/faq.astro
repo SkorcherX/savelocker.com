@@ -37,8 +37,12 @@ const faqs: { q: string; a: string }[] = [
   },
   {
     q: 'What about emulator saves?',
-    a: `<p>Not yet. RetroArch, Dolphin, PCSX2 and the rest keep saves in their own layouts that
-        nothing in the automatic detection understands today. It's on the list.</p>`,
+    a: `<p>Yes, since 1.0. Add Games lists one game per emulator save, however you launch it —
+        EmuDeck's ES-DE, Steam ROM Manager shortcuts or the emulator's own menu. Supported:
+        RetroArch, melonDS, Supermodel, Model 2 Emulator, ScummVM, PCSX2, DuckStation, Dolphin,
+        PrimeHack, PPSSPP, RPCS3, Vita3K, shadPS4, Cemu, Azahar (and Citra's old folders) and Xenia.</p>
+       <p>Each game syncs only its own saves and save states, even inside a folder the emulator shares
+        with every other game. Nintendo Switch emulators aren't supported yet.</p>`,
   },
   {
     q: 'Is there a macOS version?',
@@ -60,8 +64,11 @@ const faqs: { q: string; a: string }[] = [
     q: 'Is it safe? What are my saves stored as?',
     a: `<p>Ordinary zip files on your own disk, in a folder you chose. Nothing proprietary — if you
         ever bin SaveLocker, your saves are still sitting right there. The console is behind an admin
-        password, the agents authenticate with a per-machine key you never see, and the server takes
-        a backup of its database nightly.</p>`,
+        password, and the agents authenticate with a per-machine key you never see.</p>
+       <p>The server backs itself up on a daily or weekly schedule — every game's latest save plus its
+        database, in one zip — and takes an extra backup before any upgrade or restore. If a game's
+        save folder is suddenly emptied, SaveLocker holds that game rather than syncing the empty
+        folder to your other machines.</p>`,
   },
   {
     q: 'Is it free? What’s the catch?',

@@ -30,6 +30,10 @@ const rest = [
     body: 'Every sync is kept as its own version. Corrupted your file, or made a choice you regret? Roll back to any point in the history from the console.',
   },
   {
+    title: 'Backs itself up',
+    body: 'Scheduled backups hold every game’s latest save and the server’s database in one zip. Restore from the console, and the server takes its own backup before any upgrade or restore.',
+  },
+  {
     title: 'One file to add a machine',
     body: 'Enrollment is a single-use file that expires in about fifteen minutes. No API key is ever copied by hand, on any platform.',
   },
@@ -62,7 +66,7 @@ const compareRows = [
   { label: 'Version history you can roll back', cells: [N, 'partly', Y, Y, Y] },
   { label: 'One console for every machine you own', cells: [N, 'partly', N, N, Y] },
   { label: 'Push, pull or re-scan another machine remotely', cells: [N, N, N, N, Y] },
-  { label: 'Emulator saves', cells: [N, Y, 'partly', Y, 'not yet'] },
+  { label: 'Emulator saves', cells: [N, Y, 'partly', Y, Y] },
   { label: 'Saves never pass through anyone else’s machine', cells: [N, Y, Y, 'on a LAN', Y] },
 ];
 const compareCols = ['Steam Cloud', 'Syncthing', 'Ludusavi', 'OpenSave', 'SaveLocker'];
@@ -170,6 +174,12 @@ const compareCols = ['Steam Cloud', 'Syncthing', 'Ludusavi', 'OpenSave', 'SaveLo
         anything staged in Heroic — Epic, GOG, Amazon, sideloaded. Then it looks up where each one
         actually keeps its saves.
       </p>
+      <p>
+        Emulators too: RetroArch, Dolphin, PCSX2, DuckStation, PPSSPP, RPCS3, Cemu, Azahar and more.
+        Each game gets its own entry, found from the save files themselves, and syncs only its own
+        saves and states — never its neighbours'. A game that keeps saves in more than one folder
+        syncs all of them.
+      </p>
       <p>Most of the time, you just tick a box.</p>
       <BrowserFrame
         slot="visual"
@@ -259,6 +269,11 @@ const compareCols = ['Steam Cloud', 'Syncthing', 'Ludusavi', 'OpenSave', 'SaveLo
             SaveLocker notices the saves have diverged, flags it as a conflict, and hands you both
             options. It will not pick for you, and it will not quietly throw one away.
           </p>
+          <p>
+            And if a game's save folder is suddenly emptied — an uninstaller, a reset, the wrong
+            folder cleared — SaveLocker holds that game instead of syncing the empty folder
+            everywhere, and asks you whether to restore it or really delete it.
+          </p>
         </div>
       </div>
 
@@ -314,7 +329,7 @@ const compareCols = ['Steam Cloud', 'Syncthing', 'Ludusavi', 'OpenSave', 'SaveLo
       </p>
       <p>
         <strong>Right now it runs on Windows and on Linux, including the Steam Deck.</strong> There's
-        no macOS agent yet, and emulator saves aren't supported yet either.
+        no macOS agent yet, and Nintendo Switch emulators aren't supported yet.
       </p>
     </div>
   </section>
@@ -393,8 +408,8 @@ const compareCols = ['Steam Cloud', 'Syncthing', 'Ludusavi', 'OpenSave', 'SaveLo
       <div class="prose-sl mt-10 max-w-3xl space-y-5 text-[15px] leading-relaxed">
         <p>
           <strong><a href="https://www.opensave.org/">OpenSave</a></strong> is the closest thing to
-          SaveLocker and it's good — free, MIT-licensed, peer-to-peer, and it handles emulators,
-          which we don't yet. If you want save sync with nothing to host, install it instead; you'll
+          SaveLocker and it's good — free, MIT-licensed, peer-to-peer, and it handles emulators
+          too. If you want save sync with nothing to host, install it instead; you'll
           be happy. Its Decky plugin will also sync around gameplay on a Steam Deck, though that
           means installing Decky Loader and the plugin on top of the app, and it's Deck-only —
           on Windows, saves sync when a file changes rather than when a game starts.
